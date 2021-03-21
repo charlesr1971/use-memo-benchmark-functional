@@ -15,21 +15,12 @@ const PageHeader = (props) => {
                 buttonCalculate.setAttribute("disabled","disabled");
             }
         }
-        const buttonReset = document.getElementById("buttonReset");
-        if(buttonReset){
-            if(calculationsFinished()){
-                //buttonReset.removeAttribute("disabled")
-                //buttonReset.style.display = "block";
-            }
-        }
     }, [avgTimeNormal,avgTimeMemo]);
     // Choose how many times this component needs to be rendered
     // We will then calculate the average render time for all of these renders
     const timesToRender = 10000;
     let _avgTimeArrayNormal = [];
     let _avgTimeArrayMemo = [];
-    //let showBenchmarkNormal = false;
-    //let showBenchmarkMemo = false;
     // Callback for our profiler
     const renderProfilerNormal = (type) => {
         return (...args) => {
@@ -69,7 +60,6 @@ const PageHeader = (props) => {
             // Keep our render time in an array
             // Later on, calculate the average time
             // store args[3] which is the render time ...
-            //console.log("memo: ",args);
             _avgTimeArrayMemo.push(args[3]);
         };
     };
