@@ -315,7 +315,7 @@ i.app-enableprofanityfilter {
 }
 
 .demo-card-wide > .mdl-card__title.post {
-  background: url('./assets/images/transparent.jpg') center / cover;
+  background: url('https://getmdl.io/assets/demos/transparent.jpg') center / cover;
   overflow: visible;
 }
 
