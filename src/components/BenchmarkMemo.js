@@ -1,16 +1,21 @@
 import React, {useMemo} from 'react';
 
-const BenchmarkMemo = ({level}) => {
+const BenchmarkMemo = (props) => {
     const complexObject = useMemo(() => {
         const result = {
             values: []
         };
-        for (let i = 0; i <= level; i++) {
-            result.values.push('mytest');
+        const randomIntInc = (low, high) => {
+            return Math.floor(Math.random() * (high - low + 1) + low);
+        }
+        for (let i = 0; i <= props.level; i++) {
+            const newLocal = randomIntInc(1000000, 9999999);
+            result.values.push(newLocal);
         };
         return result;
-    }, [level]);
-    return (<div>Benchmark with memo level: {level}</div>);
+    }, [props.level]);
+    //console.log(props);
+    return ( ('idx' in props ? (parseInt(props.idx + 1)) : 0) == props.timesToRender ? (<div>Benchmark memo level: {props.level}</div>) : (<div></div>));
 };
 
 export default BenchmarkMemo;
