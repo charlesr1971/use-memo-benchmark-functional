@@ -90,24 +90,24 @@ const PageHeader = (props) => {
 
     const calculateAvgTimeNormal = function(){
         let _avgTime = 0;
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTimeArrayNormal: ",_avgTimeArrayNormal);
-        //}
+        }
         for(let i = 0; i < _avgTimeArrayNormal.length; i++){
             _avgTime += _avgTimeArrayNormal[i]; 
         }
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTime normal: ",_avgTime);
-        //}
+        }
         const _avgTimeArrayLength = parseInt(_avgTimeArrayNormal.length);
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTimeArrayLength normal: ",_avgTimeArrayLength);
-        //}
+        }
         const avgTimeNumber = parseInt(_avgTime);
         let _avgTimeNormal = avgTimeNumber/_avgTimeArrayLength;
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTimeNormal normal: ",_avgTimeNormal);
-        //}
+        }
         if(isNaN(_avgTimeNormal)){
             _avgTimeNormal = 0;
         }
@@ -119,7 +119,6 @@ const PageHeader = (props) => {
     };
 
     const executeNormal = function(){
-        //setRunAnimation(true);
         setShowBenchmarkMemo(false);
         setShowBenchmarkNormal(true);
     }
@@ -133,9 +132,9 @@ const PageHeader = (props) => {
                 spanAvgTimeNormalDone = true;
             }
         }
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("calculationsNormalFinished: ",result);
-        //}
+        }
         return spanAvgTimeNormalDone;
     }
 
@@ -164,24 +163,24 @@ const PageHeader = (props) => {
 
     const calculateAvgTimeMemo = function(){
         let _avgTime = 0;
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTimeArrayMemo: ",_avgTimeArrayMemo);
-        //}
+        }
         for(let i = 0; i < _avgTimeArrayMemo.length; i++){
             _avgTime += _avgTimeArrayMemo[i]; 
         }
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTime memo: ",_avgTime);
-        //}
+        }
         const _avgTimeArrayLength = parseInt(_avgTimeArrayMemo.length);
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTimeArrayLength memo: ",_avgTimeArrayLength);
-        //}
+        }
         const avgTimeNumber = parseInt(_avgTime);
         let _avgTimeMemo = avgTimeNumber/_avgTimeArrayLength;
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("_avgTimeMemo memo: ",_avgTimeMemo);
-        //}
+        }
         if(isNaN(_avgTimeMemo)){
             _avgTimeMemo = 0;
         }
@@ -231,9 +230,9 @@ const PageHeader = (props) => {
         if(spanAvgTimeNormalDone && spanAvgTimeMemoDone){
             result = true;
         }
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log("calculationsFinished: ",result);
-        //}
+        }
         return result;
     }
 
@@ -260,9 +259,9 @@ const PageHeader = (props) => {
     }
 
     const handleSelectChange = (event) => {
-        //if(global_consoleDebug){
+        if(global_consoleDebug){
             console.log('Pageheader: handleSelectChange(): event.target.value: ',event.target.value);
-        //}
+        }
         setTimesToRender(parseInt(event.target.value));
     }
 
