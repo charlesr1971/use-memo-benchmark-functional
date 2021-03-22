@@ -929,4 +929,8 @@ button#buttonReset.mdl-button {
     font-size: 18px;
   }
 
+  .loopamount-select select.custom {
+    width: 100%;
+  }
+
 }
