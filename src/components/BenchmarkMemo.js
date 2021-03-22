@@ -14,7 +14,9 @@ const BenchmarkMemo = (props) => {
         };
         return result;
     }, [props.level]);
-    return ( ('idx' in props ? (parseInt(props.idx + 1)) : 0) == props.timesToRender ? (<span>Benchmark memo test finished</span>) : (<span></span>));
+    //const text = ('idx' in props ? (parseInt(props.idx + 1)) : 0) == props.timesToRender ? ('Benchmark memo test finished') : ('idx' in props ? (parseInt(props.idx + 1)) : 0) == 1 ? ('Benchmark memo test started') : '';
+    const text = parseInt(props.idx + 1) == props.timesToRender ? 'Benchmark memo test finished' : (parseInt(props.idx + 1) == 1 ? '' : '');
+    return (<span>{text}</span>);
 };
 
 export default BenchmarkMemo;

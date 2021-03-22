@@ -11,7 +11,9 @@ const BenchmarkNormal = (props) => {
         const newLocal = randomIntInc(1000000, 9999999);
         complexObject.values.push(newLocal);
     }
-    return ( ('idx' in props ? (parseInt(props.idx + 1)) : 0) == props.timesToRender ? (<span>Benchmark normal test finished</span>) : (<span></span>));
+    //const text = ('idx' in props ? (parseInt(props.idx + 1)) : 0) == props.timesToRender ? ('Benchmark normal test finished') : ('idx' in props ? (parseInt(props.idx + 1)) : 0) == 1 ? ('Benchmark normal test started') : '';
+    const text = parseInt(props.idx + 1) == props.timesToRender ? 'Benchmark normal test finished' : (parseInt(props.idx + 1) == 1 ? '' : '');
+    return (<span>{text}</span>);
 };
 
 export default BenchmarkNormal;
