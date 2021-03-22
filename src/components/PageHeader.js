@@ -15,6 +15,7 @@ const PageHeader = (props) => {
     const [renderFinishedMemo, setRenderFinishedMemo] = useState(false);
     const [timesToRender, setTimesToRender] = useState(10000);
     const [countMemo, setCountMemo] = useState(0);
+    const [levels, setLevels] = useState(1);
 
     const ref1 = useRef(null);
     const ref2 = useRef(null);
@@ -55,13 +56,13 @@ const PageHeader = (props) => {
             }
             if(calculationsMemoFinished()){
                 buttonCalculate.setAttribute("disabled","disabled");
-                if(countMemo == 1){
+                if(countMemo === 1){
                     toggleMemo.removeAttribute("disabled");
                 }
                 if(global_consoleDebug){
                     console.log("useEffect: calculationsMemoFinished 1: countMemo: ",countMemo," showBenchmarkNormal: ",showBenchmarkNormal," showBenchmarkMemo: ",showBenchmarkMemo);
                 }
-                if(countMemo == 2){
+                if(countMemo === 2){
                     toggleMemo.setAttribute("disabled","disabled");
                     buttonCalculate.removeAttribute("disabled");
                 }
@@ -79,10 +80,14 @@ const PageHeader = (props) => {
     }, [avgTimeNormal,avgTimeMemo1,avgTimeMemo2,renderFinishedNormal,renderFinishedMemo]);
 
     React.useEffect(() => {
-        if(timesToRender != 10000){
+        if(timesToRender !== 10000){
             const loopamountSelect = document.getElementById("loopamountSelect");
             if(loopamountSelect){
                 loopamountSelect.setAttribute("disabled","disabled");
+            }
+            const levelamountSelect = document.getElementById("levelamountSelect");
+            if(levelamountSelect){
+                levelamountSelect.setAttribute("disabled","disabled");
             }
         }
     }, [timesToRender]);
@@ -100,7 +105,7 @@ const PageHeader = (props) => {
         }
         return [...Array(timesToRender)].map((currentValue,index) => {
             return <Profiler id={`normal-${index}`} onRender={renderProfilerNormal('normal')} key={index}>
-                <BenchmarkNormal level={1} timesToRender={timesToRender} idx={index} />
+                <BenchmarkNormal level={levels} timesToRender={timesToRender} idx={index} />
             </Profiler>;
         })
     }
@@ -115,7 +120,7 @@ const PageHeader = (props) => {
             let lastId1 = 'normal-' + parseInt(timesToRender - 1);
             lastId1 = lastId1.trim();
             let lastId2 = args[0].trim();
-            if(lastId1 == lastId2){
+            if(lastId1 === lastId2){
                 setRenderFinishedNormal(true);
             }
         };
@@ -163,7 +168,7 @@ const PageHeader = (props) => {
         const spanAvgTimeNormal = document.getElementById("spanAvgTimeNormal");
         let spanAvgTimeNormalDone = false;
         if(spanAvgTimeNormal){
-            if(spanAvgTimeNormal.innerText != 0){
+            if(spanAvgTimeNormal.innerText !== "0"){
                 spanAvgTimeNormalDone = true;
             }
         }
@@ -179,7 +184,7 @@ const PageHeader = (props) => {
         }
         return [...Array(timesToRender)].map((currentValue,index) => {
             return <Profiler id={`memo-${index}`} onRender={renderProfilerMemo('memo')} key={index}>
-                <BenchmarkMemo level={1} timesToRender={timesToRender} idx={index} />
+                <BenchmarkMemo level={levels} timesToRender={timesToRender} idx={index} />
             </Profiler>;
         })
     }
@@ -194,7 +199,7 @@ const PageHeader = (props) => {
             let lastId1 = 'memo-' + parseInt(timesToRender - 1);
             lastId1 = lastId1.trim();
             let lastId2 = args[0].trim();
-            if(lastId1 == lastId2){
+            if(lastId1 === lastId2){
                 setRenderFinishedMemo(true);
             }
         };
@@ -225,13 +230,13 @@ const PageHeader = (props) => {
         }
         if(showBenchmarkMemo){
             setRunAnimation(false);
-            if(countMemo == 1){
+            if(countMemo === 1){
                 setAvgTimeMemo1(_avgTimeMemo);
                 if(global_consoleDebug){
                     console.log("_renderProfilerMemo: avgTimeMemo1: ",avgTimeMemo1);
                 }
             }
-            if(countMemo == 2){
+            if(countMemo === 2){
                 setAvgTimeMemo2(_avgTimeMemo);
                 if(global_consoleDebug){
                     console.log("_renderProfilerMemo: avgTimeMemo2: ",avgTimeMemo2);
@@ -247,7 +252,7 @@ const PageHeader = (props) => {
         if(global_consoleDebug){
             console.log("executeMemo: showBenchmarkMemo: ",showBenchmarkMemo," countMemo: ",countMemo);
         }
-        if(countMemo == 2){
+        if(countMemo === 2){
             const toggleMemo = document.getElementById("toggleMemo");
             if(toggleMemo){
                 toggleMemo.setAttribute("disabled","disabled");
@@ -259,7 +264,7 @@ const PageHeader = (props) => {
         const spanAvgTimeMemo = document.getElementById("spanAvgTimeMemo" + countMemo);
         let spanAvgTimeMemoDone = false;
         if(spanAvgTimeMemo){
-            if(spanAvgTimeMemo.innerText != 0){
+            if(spanAvgTimeMemo.innerText !== "0"){
                 spanAvgTimeMemoDone = true;
             }
         }
@@ -276,12 +281,12 @@ const PageHeader = (props) => {
         let spanAvgTimeNormalDone = false;
         let spanAvgTimeMemo1Done = false;
         if(spanAvgTimeNormal){
-            if(spanAvgTimeNormal.innerText != 0){
+            if(spanAvgTimeNormal.innerText !== "0"){
                 spanAvgTimeNormalDone = true;
             }
         }
         if(spanAvgTimeMemo1){
-            if(spanAvgTimeMemo1.innerText != 0){
+            if(spanAvgTimeMemo1.innerText !== "0"){
                 spanAvgTimeMemo1Done = true;
             }
         }
@@ -305,17 +310,23 @@ const PageHeader = (props) => {
                 loopamountSelect.setAttribute("disabled","disabled");
             }
         }
-        if(countMemo == 2){
+        const levelamountSelect = document.getElementById("levelamountSelect");
+        if(levelamountSelect){
+            if(!levelamountSelect.hasAttribute("disabled")){
+                levelamountSelect.setAttribute("disabled","disabled");
+            }
+        }
+        if(countMemo === 2){
             if(showBenchmarkMemo){
                 setShowBenchmarkMemo(false);
             }
         }
-        if(type == 'normal'){
+        if(type === 'normal'){
             setTimeout(function(){
                 executeNormal();
             },500);
         }
-        if(type == 'memo'){
+        if(type === 'memo'){
             setTimeout(function(){
                 executeMemo();
             },500);
@@ -326,11 +337,18 @@ const PageHeader = (props) => {
         document.location = document.location;
     }
 
-    const handleSelectChange = (event) => {
+    const handleSelectChange1 = (event) => {
         if(global_consoleDebug){
-            console.log('Pageheader: handleSelectChange(): event.target.value: ',event.target.value);
+            console.log('Pageheader: handleSelectChange1(): event.target.value: ',event.target.value);
         }
         setTimesToRender(parseInt(event.target.value));
+    }
+
+    const handleSelectChange2 = (event) => {
+        if(global_consoleDebug){
+            console.log('Pageheader: handleSelectChange2(): event.target.value: ',event.target.value);
+        }
+        setLevels(parseInt(event.target.value));
     }
 
     const buttonResetStyle = {
@@ -375,7 +393,20 @@ const PageHeader = (props) => {
             );
         }
     );
-    loopamount_select = (<div className="loopamount-select"><select id="loopamountSelect" className="custom" onChange={handleSelectChange.bind(this)} value={timesToRender}>{loopamount_select}</select></div>);
+    loopamount_select = (<div className="loopamount-select"><select id="loopamountSelect" className="custom" onChange={handleSelectChange1.bind(this)} value={timesToRender}>{loopamount_select}</select></div>);
+
+    const _levelamount_select = [1,2,3,4,5,6,7,8,9,10];
+
+    let levelamount_select = _levelamount_select.map(
+        function (records, index) {
+            return (
+            <option value={records} key={index}>{records}</option>
+            );
+        }
+    );
+    levelamount_select = (<div className="levelamount-select"><select id="levelamountSelect" className="custom" onChange={handleSelectChange2.bind(this)} value={levels}>{levelamount_select}</select></div>);
+
+
 
     const headerLink = ( 
         showBenchmarkNormal ?
@@ -404,6 +435,9 @@ const PageHeader = (props) => {
                     <div className="todo-container" style={defaultStyle2}>
 
                         <div>
+                            <p className="select-title"><span>Levels</span></p>
+                            {levelamount_select}
+                            <p className="select-title"><span>Loops</span></p>
                             {loopamount_select}
                             <div className="notification"> 
                                 <div className="left">{spinner}</div>
@@ -493,6 +527,9 @@ const PageHeader = (props) => {
                         <div className="todo-container" style={defaultStyle2}>
                     
                             <div>
+                                <p className="select-title"><span>Levels</span></p>
+                                {levelamount_select}
+                                <p className="select-title"><span>Loops</span></p>
                                 {loopamount_select}
                                 <div className="notification"> 
                                     <div className="left">{spinner}</div>
@@ -582,6 +619,9 @@ const PageHeader = (props) => {
                         <div className="todo-container" style={defaultStyle2}>
 
                             <div>
+                                <p className="select-title"><span>Levels</span></p>
+                                {levelamount_select}
+                                <p className="select-title"><span>Loops</span></p>
                                 {loopamount_select}
                                 <div className="notification"> 
                                     <div className="left">{spinner}</div>
