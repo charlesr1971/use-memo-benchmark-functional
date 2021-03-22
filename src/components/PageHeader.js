@@ -4,51 +4,80 @@ import BenchmarkMemo from "./BenchmarkMemo";
 import { Spinner, Layout, Header, Navigation, Drawer, Content, Card, CardText, CardTitle, CardActions, CardMenu, IconButton, Icon } from 'react-mdl';
 
 const PageHeader = (props) => {
+
     const [showBenchmarkNormal, setShowBenchmarkNormal] = useState(false);
     const [showBenchmarkMemo, setShowBenchmarkMemo] = useState(false);
     const [avgTimeNormal, setAvgTimeNormal] = useState(0);
-    const [avgTimeMemo, setAvgTimeMemo] = useState(0);
+    const [avgTimeMemo1, setAvgTimeMemo1] = useState(0);
+    const [avgTimeMemo2, setAvgTimeMemo2] = useState(0);
     const [runAnimation, setRunAnimation] = useState(false);
     const [renderFinishedNormal, setRenderFinishedNormal] = useState(false);
     const [renderFinishedMemo, setRenderFinishedMemo] = useState(false);
     const [timesToRender, setTimesToRender] = useState(10000);
+    const [countMemo, setCountMemo] = useState(0);
+
     const ref1 = useRef(null);
     const ref2 = useRef(null);
     const ref3 = useRef(null);
+
     React.useEffect(() => {
         const buttonCalculate = document.getElementById("buttonCalculate");
         const toggleNormal = document.getElementById("toggleNormal");
         const toggleMemo = document.getElementById("toggleMemo");
-        if(buttonCalculate && toggleNormal && toggleMemo){
+        const spanAvgTimeMemo1 = document.getElementById("spanAvgTimeMemo1");
+        if(buttonCalculate && toggleNormal && toggleMemo && spanAvgTimeMemo1){
             if(renderFinishedNormal){
                 buttonCalculate.removeAttribute("disabled");
                 toggleNormal.setAttribute("disabled","disabled");
                 toggleMemo.setAttribute("disabled","disabled");
                 window.componentHandler.upgradeDom();
+                 if(global_consoleDebug){
+                    console.log("useEffect: renderFinishedNormal: countMemo: ",countMemo);
+                }
             }
             if(calculationsNormalFinished()){
                 buttonCalculate.setAttribute("disabled","disabled");
                 toggleNormal.setAttribute("disabled","disabled");
                 toggleMemo.removeAttribute("disabled");
                 window.componentHandler.upgradeDom();
+                if(global_consoleDebug){
+                    console.log("useEffect: calculationsNormalFinished: countMemo: ",countMemo);
+                }
             }
             if(renderFinishedMemo){
+                setCountMemo(countMemo + 1);
+                if(global_consoleDebug){
+                    console.log("useEffect: calculationsNormalFinished: countMemo: ",countMemo);
+                }
                 buttonCalculate.removeAttribute("disabled");
                 toggleMemo.setAttribute("disabled","disabled");
                 window.componentHandler.upgradeDom();
             }
             if(calculationsMemoFinished()){
                 buttonCalculate.setAttribute("disabled","disabled");
-                toggleMemo.setAttribute("disabled","disabled");
+                if(countMemo == 1){
+                    toggleMemo.removeAttribute("disabled");
+                }
+                if(global_consoleDebug){
+                    console.log("useEffect: calculationsMemoFinished 1: countMemo: ",countMemo," showBenchmarkNormal: ",showBenchmarkNormal," showBenchmarkMemo: ",showBenchmarkMemo);
+                }
+                if(countMemo == 2){
+                    toggleMemo.setAttribute("disabled","disabled");
+                    buttonCalculate.removeAttribute("disabled");
+                }
                 window.componentHandler.upgradeDom();
                    
             }
             if(calculationsFinished()){
                 buttonCalculate.setAttribute("disabled","disabled");
                 window.componentHandler.upgradeDom();
+                if(global_consoleDebug){
+                    console.log("useEffect: calculationsFinished: countMemo: ",countMemo);
+                }
             }
         }
-    }, [avgTimeNormal,avgTimeMemo,renderFinishedNormal,renderFinishedMemo]);
+    }, [avgTimeNormal,avgTimeMemo1,avgTimeMemo2,renderFinishedNormal,renderFinishedMemo]);
+
     React.useEffect(() => {
         if(timesToRender != 10000){
             const loopamountSelect = document.getElementById("loopamountSelect");
@@ -57,6 +86,7 @@ const PageHeader = (props) => {
             }
         }
     }, [timesToRender]);
+
     // Choose how many times this component needs to be rendered
     // We will then calculate the average render time for all of these renders
     const global_consoleDebug = false;
@@ -65,6 +95,9 @@ const PageHeader = (props) => {
     let _avgTimeArrayMemo = [];
 
     function _renderProfilerNormal(){
+        if(global_consoleDebug){
+            console.log("_renderProfilerNormal: showBenchmarkNormal: ",showBenchmarkNormal);
+        }
         return [...Array(timesToRender)].map((currentValue,index) => {
             return <Profiler id={`normal-${index}`} onRender={renderProfilerNormal('normal')} key={index}>
                 <BenchmarkNormal level={1} timesToRender={timesToRender} idx={index} />
@@ -72,7 +105,7 @@ const PageHeader = (props) => {
         })
     }
     
-    // Callback for our profiler
+    // Callback for our normal profiler
     const renderProfilerNormal = (type) => {
         return (...args) => {
             // Keep our render time in an array
@@ -121,10 +154,12 @@ const PageHeader = (props) => {
     const executeNormal = function(){
         setShowBenchmarkMemo(false);
         setShowBenchmarkNormal(true);
+        if(global_consoleDebug){
+            console.log("executeNormal: showBenchmarkNormal: ",showBenchmarkNormal);
+        }
     }
 
     const calculationsNormalFinished = function(){
-        let result = false;
         const spanAvgTimeNormal = document.getElementById("spanAvgTimeNormal");
         let spanAvgTimeNormalDone = false;
         if(spanAvgTimeNormal){
@@ -133,12 +168,15 @@ const PageHeader = (props) => {
             }
         }
         if(global_consoleDebug){
-            console.log("calculationsNormalFinished: ",result);
+            console.log("calculationsNormalFinished: ",spanAvgTimeNormalDone);
         }
         return spanAvgTimeNormalDone;
     }
 
     function _renderProfilerMemo(){
+        if(global_consoleDebug){
+            console.log("_renderProfilerMemo: showBenchmarkMemo: ",showBenchmarkMemo);
+        }
         return [...Array(timesToRender)].map((currentValue,index) => {
             return <Profiler id={`memo-${index}`} onRender={renderProfilerMemo('memo')} key={index}>
                 <BenchmarkMemo level={1} timesToRender={timesToRender} idx={index} />
@@ -146,6 +184,7 @@ const PageHeader = (props) => {
         })
     }
 
+    // Callback for our memo profiler
     const renderProfilerMemo = (type) => {
         return (...args) => {
             // Keep our render time in an array
@@ -164,7 +203,7 @@ const PageHeader = (props) => {
     const calculateAvgTimeMemo = function(){
         let _avgTime = 0;
         if(global_consoleDebug){
-            console.log("_avgTimeArrayMemo: ",_avgTimeArrayMemo);
+            console.log("_avgTimeArrayMemo1: ",_avgTimeArrayMemo);
         }
         for(let i = 0; i < _avgTimeArrayMemo.length; i++){
             _avgTime += _avgTimeArrayMemo[i]; 
@@ -186,7 +225,18 @@ const PageHeader = (props) => {
         }
         if(showBenchmarkMemo){
             setRunAnimation(false);
-            setAvgTimeMemo(_avgTimeMemo);
+            if(countMemo == 1){
+                setAvgTimeMemo1(_avgTimeMemo);
+                if(global_consoleDebug){
+                    console.log("_renderProfilerMemo: avgTimeMemo1: ",avgTimeMemo1);
+                }
+            }
+            if(countMemo == 2){
+                setAvgTimeMemo2(_avgTimeMemo);
+                if(global_consoleDebug){
+                    console.log("_renderProfilerMemo: avgTimeMemo2: ",avgTimeMemo2);
+                }
+            }
         }
         _avgTimeArrayMemo = [];
     };
@@ -194,40 +244,48 @@ const PageHeader = (props) => {
     const executeMemo = function(){
         setShowBenchmarkNormal(false);
         setShowBenchmarkMemo(true);
+        if(global_consoleDebug){
+            console.log("executeMemo: showBenchmarkMemo: ",showBenchmarkMemo," countMemo: ",countMemo);
+        }
+        if(countMemo == 2){
+            const toggleMemo = document.getElementById("toggleMemo");
+            if(toggleMemo){
+                toggleMemo.setAttribute("disabled","disabled");
+            }
+        }
     }
 
     const calculationsMemoFinished = function(){
-        let result = false;
-        const spanAvgTimeMemo = document.getElementById("spanAvgTimeMemo");
+        const spanAvgTimeMemo = document.getElementById("spanAvgTimeMemo" + countMemo);
         let spanAvgTimeMemoDone = false;
         if(spanAvgTimeMemo){
             if(spanAvgTimeMemo.innerText != 0){
                 spanAvgTimeMemoDone = true;
             }
         }
-        //if(global_consoleDebug){
-            console.log("calculationsMemoFinished: ",result);
-        //}
+        if(global_consoleDebug){
+            console.log("calculationsMemoFinished: countMemo: ",countMemo,' spanAvgTimeMemoDone: ',spanAvgTimeMemoDone);
+        }
         return spanAvgTimeMemoDone;
     }
 
     const calculationsFinished = function(){
         let result = false;
         const spanAvgTimeNormal = document.getElementById("spanAvgTimeNormal");
-        const spanAvgTimeMemo = document.getElementById("spanAvgTimeMemo");
+        const spanAvgTimeMemo1 = document.getElementById("spanAvgTimeMemo1");
         let spanAvgTimeNormalDone = false;
-        let spanAvgTimeMemoDone = false;
+        let spanAvgTimeMemo1Done = false;
         if(spanAvgTimeNormal){
             if(spanAvgTimeNormal.innerText != 0){
                 spanAvgTimeNormalDone = true;
             }
         }
-        if(spanAvgTimeMemo){
-            if(spanAvgTimeMemo.innerText != 0){
-                spanAvgTimeMemoDone = true;
+        if(spanAvgTimeMemo1){
+            if(spanAvgTimeMemo1.innerText != 0){
+                spanAvgTimeMemo1Done = true;
             }
         }
-        if(spanAvgTimeNormalDone && spanAvgTimeMemoDone){
+        if(spanAvgTimeNormalDone && spanAvgTimeMemo1Done){
             result = true;
         }
         if(global_consoleDebug){
@@ -238,6 +296,20 @@ const PageHeader = (props) => {
 
     const animate = function(type){
         setRunAnimation(true);
+        if(global_consoleDebug){
+            console.log("calculationsMemoFinished: countMemo: ",countMemo);
+        }
+        const loopamountSelect = document.getElementById("loopamountSelect");
+        if(loopamountSelect){
+            if(!loopamountSelect.hasAttribute("disabled")){
+                loopamountSelect.setAttribute("disabled","disabled");
+            }
+        }
+        if(countMemo == 2){
+            if(showBenchmarkMemo){
+                setShowBenchmarkMemo(false);
+            }
+        }
         if(type == 'normal'){
             setTimeout(function(){
                 executeNormal();
@@ -252,10 +324,6 @@ const PageHeader = (props) => {
 
     const resetPage = () => {
         document.location = document.location;
-    }
-
-    const randomIntInc = (low, high) => {
-        return Math.floor(Math.random() * (high - low + 1) + low);
     }
 
     const handleSelectChange = (event) => {
@@ -288,7 +356,6 @@ const PageHeader = (props) => {
     optsClassName1['className'] = "demo-card-wide";
     let optsClassName2 = {};
     optsClassName2['className'] = "post";
-
     
     const defaultStyle4 = {
         display: 'none'
@@ -324,6 +391,9 @@ const PageHeader = (props) => {
                         </li>
                         <li>
                             Please click on the Toggle Memo button, until a 'finish' notification appears, and then the calculate button
+                        </li>
+                        <li>
+                            Repeat step 2. This ensures that the <strong>useMemo</strong> hook has an opportunity to cache each element.
                         </li>
                         <li>
                             Click on the refresh icon above.
@@ -372,10 +442,16 @@ const PageHeader = (props) => {
                                         </h4>
                                     </CardTitle>
                                     <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', alignItems: 'center', color: '#fff'}}>
-                                        <span id="spanAvgTimeMemo">{avgTimeMemo}</span>
+                                        <span id="spanAvgTimeMemo1">{avgTimeMemo1}</span>
                                         <div className="mdl-layout-spacer"></div>
                                         <Icon name="calculate" />
                                     </CardActions>
+                                    <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', alignItems: 'center', color: '#fff'}}>
+                                        <span id="spanAvgTimeMemo2">{avgTimeMemo2}</span>
+                                        <div className="mdl-layout-spacer"></div>
+                                        <Icon name="calculate" />
+                                    </CardActions>
+                                    
                                 </Card>
 
                             </div>
@@ -404,6 +480,9 @@ const PageHeader = (props) => {
                             </li>
                             <li>
                                 Please click on the Toggle Memo button, until a 'finish' notification appears, and then the calculate button
+                            </li>
+                            <li>
+                                Repeat step 2. This ensures that the <strong>useMemo</strong> hook has an opportunity to cache each element.
                             </li>
                             <li>
                                 Click on the refresh icon above.
@@ -455,7 +534,12 @@ const PageHeader = (props) => {
                                             </h4>
                                         </CardTitle>
                                         <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', alignItems: 'center', color: '#fff'}}>
-                                            <span id="spanAvgTimeMemo">{avgTimeMemo}</span>
+                                            <span id="spanAvgTimeMemo1">{avgTimeMemo1}</span>
+                                            <div className="mdl-layout-spacer"></div>
+                                            <Icon name="calculate" />
+                                        </CardActions>
+                                        <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', alignItems: 'center', color: '#fff'}}>
+                                            <span id="spanAvgTimeMemo2">{avgTimeMemo2}</span>
                                             <div className="mdl-layout-spacer"></div>
                                             <Icon name="calculate" />
                                         </CardActions>
@@ -485,6 +569,9 @@ const PageHeader = (props) => {
                             </li>
                             <li>
                                 Please click on the Toggle Memo button, until a 'finish' notification appears, and then the calculate button
+                            </li>
+                            <li>
+                                Repeat step 2. This ensures that the <strong>useMemo</strong> hook has an opportunity to cache each element.
                             </li>
                             <li>
                                 Click on the refresh icon above.
@@ -531,7 +618,12 @@ const PageHeader = (props) => {
                                             </h4>
                                         </CardTitle>
                                         <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', alignItems: 'center', color: '#fff'}}>
-                                            <span id="spanAvgTimeMemo">{avgTimeMemo}</span>
+                                            <span id="spanAvgTimeMemo1">{avgTimeMemo1}</span>
+                                            <div className="mdl-layout-spacer"></div>
+                                            <Icon name="calculate" />
+                                        </CardActions>
+                                        <CardActions border style={{borderColor: 'rgba(255, 255, 255, 0.2)', display: 'flex', boxSizing: 'border-box', alignItems: 'center', color: '#fff'}}>
+                                            <span id="spanAvgTimeMemo2">{avgTimeMemo2}</span>
                                             <div className="mdl-layout-spacer"></div>
                                             <Icon name="calculate" />
                                         </CardActions>
@@ -567,6 +659,7 @@ const PageHeader = (props) => {
             </Content>
         </Layout>
     );
+
 };
 
 export default PageHeader;
